@@ -1,0 +1,4 @@
+lurkcoin.db
+db.json*
+.mypy_cache
+go

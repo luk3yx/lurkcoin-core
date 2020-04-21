@@ -1,0 +1,52 @@
+# Example lurkcoin configuration file.
+
+# The name of this lurkcoin instance. This should not be "lurkcoin" to avoid
+# conflicts.
+name: Test
+
+# The address port to bind on.
+# address: "[::]"
+port: 5000
+
+# TLS (optional).
+tls:
+    enable: false
+    cert_file: /path/to/cert.pem
+    key_file: /path/to/key.pem
+
+# The database to use.
+database:
+    # bbolt (recommended)
+    # type: bbolt
+    # location: lurkcoin.db
+
+    # Plaintext
+    type: plaintext
+    location: db.json
+
+# Admin pages (accessible at /admin)
+admin_pages:
+    enable: true
+    users:
+        test:
+            password_hash: dccc9b5e6a27bb343a5b859d5bc0b867a8e191161634d8387f6d633580f4f9732219d33076ae709bab765fc8b097b35b52dc5eba1d29f502fc2b2b823736c887
+            password_salt: <salt>
+            hash_algorithm: sha512
+
+            # Allow the creation of servers and the editing of their balances.
+            allow_editing: true
+
+            # Allows database backups to be downloaded. This also requires
+            # allow_editing to be enabled.
+            allow_database_download: true
+
+# A logfile to redirect standard output to.
+# logfile: /tmp/logfile
+
+# URL redirects. Please don't make redirects that conflict with lurkcoin's
+# admin pages or APIs.
+redirects:
+    /: /admin
+
+# The minimum API version to enable.
+# min_api_version: 2
