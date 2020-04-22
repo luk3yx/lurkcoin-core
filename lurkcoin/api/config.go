@@ -21,6 +21,7 @@ package api
 import (
 	"fmt"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"lurkcoin"
 	"lurkcoin/databases"
@@ -65,6 +66,12 @@ type Config struct {
 
 	// The minimum HTTPS API version to support.
 	MinAPIVersion uint8 `yaml:"min_api_version"`
+
+	// Suppresses any HTTP-related logs such as TLS handshake errors.
+	SuppressHTTPLogs bool `yaml:"suppress_http_logs"`
+
+	// Disables HTTP keep-alives.
+	DisableHTTPKeepAlives bool `yaml:"disable_http_keepalives"`
 }
 
 func LoadConfig(filename string) (*Config, error) {
@@ -133,10 +140,16 @@ func StartServer(config *Config) {
 		log.SetOutput(f)
 	}
 
+	// Suppress HTTP logs.
 	server := &http.Server{Addr: address, Handler: router}
+	if config.SuppressHTTPLogs {
+		server.ErrorLog = log.New(ioutil.Discard, "", 0)
+	}
 
 	// My laptop doesn't work nicely with Keep-Alive.
-	server.SetKeepAlivesEnabled(false)
+	if config.DisableHTTPKeepAlives {
+		server.SetKeepAlivesEnabled(false)
+	}
 
 	if config.TLS.Enable {
 		err = server.ListenAndServeTLS(config.TLS.CertFile, config.TLS.KeyFile)
