@@ -39,8 +39,8 @@ const SYMBOL = "¤"
 const VERSION = "3.0.0 alpha 0"
 
 // Note that public source code is required by the AGPL
-const SOURCE_URL = "https://github.com/luk3yx/lurkcoin"
-const REPORT_SECURITY = "https://gitlab.com/luk3yx/lurkcoin/-/issues/new"
+const SOURCE_URL = "https://github.com/luk3yx/lurkcoin-core"
+const REPORT_SECURITY = "https://gitlab.com/luk3yx/lurkcoin-core/-/issues/new"
 
 // Copyrights should be separated by newlines
 const COPYRIGHT = "Copyright © 2020 by luk3yx"

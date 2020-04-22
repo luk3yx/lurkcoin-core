@@ -619,7 +619,7 @@ func addAdminPages(router *httprouter.Router, db lurkcoin.Database,
 		io.WriteString(w, adminPagesHeader+
 			`<h2>An error has occurred!</h2>`+
 			`<h5>`+msg+`</h5>`+
-			`<i>You can hurry back to the previous page, or learn to like `+
+			`<i>You can hurry back to the previous page, or learn to like`+
 			` this error and then eventually grow old and die.</i>`+
 			`<br/><br/>`+
 			`<a class="button button-primary" href="/admin">Go back</a>`+
