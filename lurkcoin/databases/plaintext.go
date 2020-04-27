@@ -113,7 +113,6 @@ func (self *plaintextDatabase) FreeServers(servers []*lurkcoin.Server, save bool
 	if err != nil {
 		panic(err)
 	}
-	fn = ""
 }
 
 func (self *plaintextDatabase) CreateServer(name string) (*lurkcoin.Server, bool) {
