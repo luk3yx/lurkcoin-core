@@ -4,7 +4,7 @@
 # conflicts.
 name: Test
 
-# The address port to bind on.
+# The address and port to bind on.
 # address: "[::]"
 port: 5000
 

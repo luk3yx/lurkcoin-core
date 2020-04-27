@@ -27,7 +27,7 @@ import (
 	"errors"
 	"lurkcoin"
 
-	bolt "github.com/etcd-io/bbolt"
+	bolt "go.etcd.io/bbolt"
 )
 
 type boltDatabase struct {

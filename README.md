@@ -8,11 +8,11 @@ currently WIP and there will probably be bugs.
 
  - [Go](https://golang.org) 1.10+, Go 1.14 or later recommended.
  - [bbolt](https://github.com/etcd-io/bbolt)
-    - `go get https://github.com/etcd-io/bbolt`
+    - `go get go.etcd.io/bbolt`
  - [httprouter](https://github.com/julienschmidt/httprouter)
-    - `go get https://github.com/julienschmidt/httprouter`
+    - `go get github.com/julienschmidt/httprouter`
  - [yaml](https://gopkg.in/yaml.v2)
-    - `go get https://gopkg.in/yaml.v2`
+    - `go get gopkg.in/yaml.v2`
 
 ## Configuration
 
