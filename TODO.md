@@ -1,6 +1,7 @@
 # TODO
 
  - Fix exchange rate calculations.
+    - Add exchange rate fees.
  - Make the limits on the size of V2 requests more strict.
  - Allow a client-provided identifier in `/v3/pay` to prevent double-ups.
  - Rate limit failed login attempts (on both API endpoints and the admin pages).

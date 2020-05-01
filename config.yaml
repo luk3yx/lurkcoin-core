@@ -29,7 +29,7 @@ admin_pages:
     enable: true
     users:
         test:
-            password_hash: dccc9b5e6a27bb343a5b859d5bc0b867a8e191161634d8387f6d633580f4f9732219d33076ae709bab765fc8b097b35b52dc5eba1d29f502fc2b2b823736c887
+            password_hash: 939409414d6a1f6d2101a174e1a611fbf233fe58aa97959eb44dbc75baed2361affd4f6b8ce23e2f904515e7efc89e91dc61e7f6235c994bb721cdf78ba7c3d9
             password_salt: <salt>
             hash_algorithm: sha512
 

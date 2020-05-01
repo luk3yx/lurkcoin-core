@@ -36,7 +36,7 @@ import (
 
 // Changing the symbol will break the legacy database (not compiled by default)
 const SYMBOL = "¤"
-const VERSION = "3.0.0 alpha 0"
+const VERSION = "3.0.0 alpha 1"
 
 // Note that public source code is required by the AGPL
 const SOURCE_URL = "https://github.com/luk3yx/lurkcoin-core"
@@ -216,13 +216,11 @@ func GetV2History(summary Summary, appendID bool) (h []string) {
 
 // Returns true if a == b in a constant time. Note that this will however leak
 // string lengths.
-func ConstantTimeCompare(a string, b string) bool {
-	first := []byte(a)
-	second := []byte(b)
+func ConstantTimeCompare(a, b string) bool {
 	// Comparing the length isn't strictly necessary in Go 1.4+, however is
 	// done anyway.
-	if len(first) != len(second) {
+	if len(a) != len(b) {
 		return false
 	}
-	return subtle.ConstantTimeCompare(first, second) != 0
+	return subtle.ConstantTimeCompare([]byte(a), []byte(b)) != 0
 }
