@@ -219,9 +219,10 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 
 	v2Post(router, db, "exchange_rates", false,
 		func(r *HTTPRequest, f v2Form) (interface{}, error) {
+			// Invalid amounts are assumed to be 1.
 			amount, err := lurkcoin.ParseCurrency(f.Get("amount"))
-			if err != nil {
-				return nil, err
+			if err != nil || !amount.GtZero() {
+				amount = c1
 			}
 
 			return lurkcoin.GetExchangeRate(r.Database, f.Get("from"),
@@ -233,8 +234,8 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 	v2Post(router, db, "get_exchange_rate", false,
 		func(r *HTTPRequest, f v2Form) (interface{}, error) {
 			amount, err := lurkcoin.ParseCurrency(f.Get("amount"))
-			if err != nil {
-				return nil, err
+			if err != nil || !amount.GtZero() {
+				amount = c1
 			}
 
 			return lurkcoin.GetExchangeRate(r.Database, f.Get("name"),
