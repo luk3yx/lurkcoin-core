@@ -36,7 +36,7 @@ import (
 
 // Changing the symbol will break the legacy database (not compiled by default)
 const SYMBOL = "¤"
-const VERSION = "3.0.0 alpha 1"
+const VERSION = "3.0.0"
 
 // Note that public source code is required by the AGPL
 const SOURCE_URL = "https://github.com/luk3yx/lurkcoin-core"

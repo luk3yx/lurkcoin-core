@@ -1,7 +1,5 @@
 # lurkcoinV3 API documentation
 
-**This document is a work in progress and is subject to change!**
-
 lurkcoin provides an API for servers and other integrations.
 
 In version 3 of the API, JSON is recommended for requests and used for all

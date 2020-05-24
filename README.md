@@ -1,8 +1,7 @@
 # lurkcoin
 
-This is the core code of the next major release of
-[lurkcoin](https://forum.minetest.net/viewtopic.php?f=9&t=22768). This is
-currently WIP and there will probably be bugs.
+This is the core code of the current release of
+[lurkcoin](https://forum.minetest.net/viewtopic.php?f=9&t=22768).
 
 ## Dependencies
 
