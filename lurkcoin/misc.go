@@ -34,7 +34,6 @@ import (
 	"unicode"
 )
 
-// Changing the symbol will break the legacy database (not compiled by default)
 const SYMBOL = "¤"
 const VERSION = "3.0.0"
 
