@@ -151,11 +151,23 @@ func StartServer(config *Config) {
 		log.Printf("Starting server on http://%s/", urlAddress)
 	}
 
+	// Remove any socket file that already exists
+	if networkProtocol == "unix" {
+		os.Remove(address)
+	}
+
 	// Bind to the address
 	var ln net.Listener
 	ln, err = net.Listen(networkProtocol, address)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	// Change permissions on the UNIX socket
+	if networkProtocol == "unix" {
+		if err := os.Chmod(address, 0777); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Switch to the logfile

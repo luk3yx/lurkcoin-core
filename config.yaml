@@ -8,7 +8,8 @@ name: Test
 address: "[::]"
 port: 5000
 
-# Alternatively, lurkcoin can bind on a UNIX domain socket.
+# Alternatively, lurkcoin can bind on a UNIX domain socket. The socket will be
+# world-writable.
 # network_protocol: unix
 # address: "/tmp/lurkcoin.sock"
 
