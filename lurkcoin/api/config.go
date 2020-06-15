@@ -25,6 +25,7 @@ import (
 	"log"
 	"lurkcoin"
 	"lurkcoin/databases"
+	"net"
 	"net/http"
 	"os"
 	"strings"
@@ -34,6 +35,10 @@ type Config struct {
 	// The name of this service (for example "lurkcoin"). This is also used as
 	// the default server name for the v2 API.
 	Name string `yaml:"name"`
+
+	// The network protocol to use when binding to the socket. Defaults to
+	// "tcp", can be set to "unix" for example.
+	NetworkProtocol string `yaml:"network_protocol"`
 
 	// The address to bind to (optional) and port.
 	Address string `yaml:"address"`
@@ -115,17 +120,45 @@ func StartServer(config *Config) {
 
 	router := MakeHTTPRouter(db, config)
 
-	address := fmt.Sprintf("%s:%d", config.Address, config.Port)
-	urlAddress := address
-	if config.Address == "" {
-		urlAddress = "[::]" + urlAddress
+
+	var address, networkProtocol, urlAddress string
+	switch config.NetworkProtocol {
+	case "", "tcp":
+		if config.Port == 0 {
+			address = config.Address
+		} else {
+			address = fmt.Sprintf("%s:%d", address, config.Port)
+		}
+		networkProtocol = "tcp"
+		urlAddress = address
+		if address != "" && address[0] == ':' {
+			urlAddress = "[::]" + urlAddress
+		}
+	case "unix":
+		address = config.Address
+		networkProtocol = "unix"
+		urlAddress = "unix:" + address + ":"
+		if config.Port != 0 {
+			log.Fatal("The port option is invalid with UNIX sockets.")
+		}
+	default:
+		log.Fatalf("Unrecognised network protocol: %q", config.NetworkProtocol)
 	}
+
 	if config.TLS.Enable {
 		log.Printf("Starting server on https://%s/", urlAddress)
 	} else {
 		log.Printf("Starting server on http://%s/", urlAddress)
 	}
 
+	// Bind to the address
+	var ln net.Listener
+	ln, err = net.Listen(networkProtocol, address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Switch to the logfile
 	if config.Logfile != "" {
 		f, err := os.OpenFile(
 			config.Logfile,
@@ -151,10 +184,11 @@ func StartServer(config *Config) {
 		server.SetKeepAlivesEnabled(false)
 	}
 
+	// Serve the webpage
 	if config.TLS.Enable {
-		err = server.ListenAndServeTLS(config.TLS.CertFile, config.TLS.KeyFile)
+		err = server.ServeTLS(ln, config.TLS.CertFile, config.TLS.KeyFile)
 	} else {
-		err = server.ListenAndServe()
+		err = server.Serve(ln)
 	}
 
 	log.Fatal(err)

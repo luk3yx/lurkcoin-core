@@ -5,8 +5,12 @@
 name: Test
 
 # The address and port to bind on.
-# address: "[::]"
+address: "[::]"
 port: 5000
+
+# Alternatively, lurkcoin can bind on a UNIX domain socket.
+# network_protocol: unix
+# address: "/tmp/lurkcoin.sock"
 
 # TLS (optional).
 tls:
