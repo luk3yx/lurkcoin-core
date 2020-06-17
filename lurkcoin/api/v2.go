@@ -247,8 +247,8 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 		func(r *HTTPRequest, f v2Form) (interface{}, error) {
 			transactions := r.Server.GetPendingTransactions()
 			if f.Get("simple") != "" {
+				_, exc := r.Server.GetExchangeRate(c1, false)
 				if len(transactions) == 0 {
-					_, exc := r.Server.GetExchangeRate(c1, false)
 					return exc, nil
 				}
 				s := func(n string) string {
@@ -257,7 +257,8 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 				transaction := transactions[0]
 				// To support fragile clients (such as versions of the lurkcoin
 				// mod that use the /v2 API), "¤" is replaced with "_".
-				return fmt.Sprintf("%d|%s|%s|%s",
+				return fmt.Sprintf("%g|%d|%s|%s|%s",
+					exc,
 					transaction.GetLegacyID(),
 					s(strings.Replace(transaction.Target, "¤", "_", -1)),
 					transaction.ReceivedAmount.RawString(),
