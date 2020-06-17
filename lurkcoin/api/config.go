@@ -120,7 +120,6 @@ func StartServer(config *Config) {
 
 	router := MakeHTTPRouter(db, config)
 
-
 	var address, networkProtocol, urlAddress string
 	switch config.NetworkProtocol {
 	case "", "tcp":
