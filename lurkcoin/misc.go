@@ -35,7 +35,7 @@ import (
 )
 
 const SYMBOL = "¤"
-const VERSION = "3.0.2"
+const VERSION = "3.0.3"
 
 // Note that public source code is required by the AGPL
 const SOURCE_URL = "https://github.com/luk3yx/lurkcoin-core"

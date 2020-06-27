@@ -39,8 +39,19 @@ type v2Form interface {
 	Get(string) string
 }
 
+// Converts non-string values (such as numbers) to strings.
+type v2JsonValue string
+
+func (self *v2JsonValue) UnmarshalJSON(data []byte) error {
+	if len(data) > 0 && data[0] == '"' {
+		return json.Unmarshal(data, (*string)(self))
+	}
+	*self = v2JsonValue(data)
+	return nil
+}
+
 type v2MapForm struct {
-	form map[string]json.Number
+	form map[string]v2JsonValue
 }
 
 func (self *v2MapForm) Get(key string) string {
@@ -62,8 +73,7 @@ func v2GetQuery(r *http.Request) v2Form {
 		return r.Form
 	}
 
-	// Because json.Number extends string it can be used for strings.
-	form := make(map[string]json.Number)
+	form := make(map[string]v2JsonValue)
 	(&HTTPRequest{Request: r}).Unmarshal(&form)
 	return &v2MapForm{form}
 }
