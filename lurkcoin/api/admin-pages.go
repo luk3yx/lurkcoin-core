@@ -37,25 +37,6 @@ const adminPagesHeader = `<!DOCTYPE html>
 	<title>lurkcoin admin pages</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
 	<link rel="stylesheet" href="https://www.xeroxirc.net/style.css" />
-	<style>
-	.button, button, input[type=button], input[type=reset], input[type=submit] {
-		height: 32px;
-		padding: 0 15px;
-		line-height: 32px;
-		margin-right: 0.5rem;
-	}
-	.button:not(.button-primary), button:not(.button-primary), input[type=button]:not(.button-primary), input[type=reset]:not(.button-primary), input[type=submit]:not(.button-primary) {
-		border-color: transparent;
-	}
-	.button.button-primary, button.button-primary, input[type="button"].button-primary, input[type="reset"].button-primary, input[type="submit"].button-primary {
-		background-color: #007FA9;
-		border-color: #007FA9;
-	}
-	.button.button-primary:focus, .button.button-primary:hover, button.button-primary:focus, button.button-primary:hover, input[type="button"].button-primary:focus, input[type="button"].button-primary:hover, input[type="reset"].button-primary:focus, input[type="reset"].button-primary:hover, input[type="submit"].button-primary:focus, input[type="submit"].button-primary:hover {
-		background-color: #006F99;
-		border-color: #006F99;
-	}
-	</style>
 	<meta name="viewport" content="width=device-width" />
 </head>
 <body>
