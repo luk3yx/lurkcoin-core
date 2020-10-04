@@ -22,6 +22,9 @@ encounters errors processing your request, this will be false and an error code
 will be added to the response. Otherwise, the response data (if any) will be in
 the `result` key.
 
+The `X-Force-OK` header can be set to `true` to force a `200 OK` reply even
+when an error occurs.
+
 ### Examples
 
 ```json

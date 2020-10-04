@@ -56,7 +56,13 @@ func v3WrapHTTPHandler(db lurkcoin.Database, autoLogin bool,
 			var c int
 			res["success"] = false
 			res["error"], res["message"], c = lurkcoin.LookupError(err.Error())
-			w.WriteHeader(c)
+
+			// Workaround for limitations of Minetest's HTTP API
+			if isYes(r.Header.Get("X-Force-OK")) {
+				w.WriteHeader(http.StatusOK)
+			} else {
+				w.WriteHeader(c)
+			}
 		}
 
 		// TODO: Possibly write JSON directly to the ResponseWriter.

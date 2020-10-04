@@ -157,15 +157,6 @@ func v2Post(router *httprouter.Router, db lurkcoin.Database, url string,
 	router.POST(url, f2)
 }
 
-func v2IsYes(s string) bool {
-	switch strings.ToLower(s) {
-	case "true", "yes", "y", "1":
-		return true
-	default:
-		return false
-	}
-}
-
 func addV2API(router *httprouter.Router, db lurkcoin.Database,
 	lurkcoinName string) {
 
@@ -205,7 +196,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 			}
 
 			_, err = r.Server.Pay("", target, targetServer,
-				amount, v2IsYes(f.Get("local_currency")), true)
+				amount, isYes(f.Get("local_currency")), true)
 			if err != nil {
 				return nil, err
 			}
@@ -284,7 +275,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 					transaction.String(),
 				}
 			}
-			if v2IsYes(f.Get("as_object")) {
+			if isYes(f.Get("as_object")) {
 				_, exc := r.Server.GetExchangeRate(c1, false)
 				return map[string]interface{}{
 					"exchange_rate": json.RawMessage(exc.String()),

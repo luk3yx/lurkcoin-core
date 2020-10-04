@@ -172,3 +172,12 @@ func MakeHTTPRouter(db lurkcoin.Database, config *Config) *httprouter.Router {
 	addV2API(router, db, config.Name)
 	return router
 }
+
+func isYes(s string) bool {
+	switch strings.ToLower(s) {
+	case "true", "yes", "y", "1":
+		return true
+	default:
+		return false
+	}
+}
