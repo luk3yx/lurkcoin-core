@@ -53,6 +53,9 @@ func (sourceServer *Server) Pay(source, target string,
 
 	// No stealing
 	if !sentAmount.GtZero() || !amount.GtZero() {
+		if amount.IsZero() {
+			return nil, errors.New("ERR_CANNOTPAYNOTHING")
+		}
 		return nil, errors.New("ERR_INVALIDAMOUNT")
 	}
 
@@ -60,13 +63,12 @@ func (sourceServer *Server) Pay(source, target string,
 		return nil, errors.New("ERR_TRANSACTIONLIMIT")
 	}
 
-	// Remove the amount
-	success := sourceServer.ChangeBal(amount.Neg())
-	if !success {
-		return nil, errors.New("ERR_CANNOTAFFORD")
+	var receivedAmount Currency
+	if sourceServer == targetServer {
+		receivedAmount = sentAmount
+	} else {
+		receivedAmount, _ = targetServer.GetExchangeRate(amount, false)
 	}
-
-	receivedAmount, _ := targetServer.GetExchangeRate(amount, false)
 
 	if !receivedAmount.GtZero() {
 		return nil, errors.New("ERR_CANNOTPAYNOTHING")
@@ -76,10 +78,13 @@ func (sourceServer *Server) Pay(source, target string,
 		return nil, errors.New("ERR_TRANSACTIONLIMIT")
 	}
 
-	success = targetServer.ChangeBal(amount)
+	// Remove the amount
+	if !sourceServer.ChangeBal(amount.Neg()) {
+		return nil, errors.New("ERR_CANNOTAFFORD")
+	}
 
-	// This should always be true
-	if !success {
+	if !targetServer.ChangeBal(amount) {
+		// This should never happen
 		// Revert the previous balance change before returning
 		sourceServer.ChangeBal(amount)
 		return nil, errors.New("ERR_INTERNALERROR")
