@@ -52,10 +52,6 @@ The following errors may be raised on any API endpoint:
 
 # API endpoints
 
-These endpoints are shared between both lurkcoinV3-core and the suggested bank
-API. Any API parameter marked with "servers only" can only be used with
-lurkcoinV3-core.
-
 ## GET `/v3/summary`
 
 Returns an "account summary".
@@ -69,7 +65,7 @@ This endpoint returns a JSON-formatted object with the following items:
     `balance` will be `¤1.23` or similar).
  - `history`: A list with the 10 most recent [transaction objects].
  - `interest_rate`: The current interest rate.
- - `target_balance` *(servers only)*: The server's target balance. This will be
+ - `target_balance`: The server's target balance. This will be
     `0` if the server's local currency is equal to lurkcoin.
 
 ## POST `/v3/pay`
@@ -79,12 +75,11 @@ Sends a payment to a user. This will return the transaction object (see
 IDs for local transactions.
 
 Parameters:
- - `source` *(servers only)*: The user who is sending the transaction.
+ - `source`: The user who is sending the transaction.
  - `target`: The target user to pay.
- - `target_server`: The server to pay the user on. If this is a bank, empty
-    strings should be treated as the current bank.
+ - `target_server`: The server to pay the user on.
  - `amount`: The amount to pay the user.
- - `local_currency` *(servers only)*: If `true`, lurkcoin will calculate the
+ - `local_currency`: If `true`, lurkcoin will calculate the
     local server's exchange rate before processing the transaction.
 
 Errors raised:
