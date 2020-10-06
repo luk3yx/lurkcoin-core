@@ -22,6 +22,7 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"github.com/julienschmidt/httprouter"
+	"html"
 	"html/template"
 	"io"
 	"log"
@@ -43,6 +44,29 @@ const adminPagesHeader = `<!DOCTYPE html>
 <main style="padding: 1.5em;">`
 
 const adminPagesFooter = `</main></body></html>`
+
+const popOutCode = `
+btn.style.display = "inline";
+btn.addEventListener("click", () => {
+	form.style.display = "block";
+	form.style.transition = "ease-in-out 250ms transform";
+	window.setTimeout(() => {
+		form.style.transform = "scaleY(1)";
+		form.style.maxHeight = form.scrollHeight.toString() + "px";
+		btn.style.opacity = "0.5";
+		btn.style.pointerEvents = "none";
+		window.location.hash = "#" + form.id;
+	}, 25);
+	btn.blur();
+});
+function hideForm() {
+	form.style.transition = "ease-in-out 250ms";
+	form.style.transform = "scaleY(0)";
+	form.style.maxHeight = "0";
+	btn.style.opacity = "1";
+	btn.style.pointerEvents = "";
+}
+`
 
 const serverListTemplate = adminPagesHeader + `
 <h2>Server list</h2>
@@ -110,34 +134,15 @@ const serverListTemplate = adminPagesHeader + `
 				required="required" id="username-field" /><br/>
 			<input type="submit" name="submit" class="button-primary"
 				value="Create" />
-			<button type="button" onclick="hideForm()">Cancel</button>
+			<button type="button" onclick="hideForm2()">Cancel</button>
 		</div>
 	</form>
 
 	<script>
 		"use strict";
-		let btn = document.getElementById("new-server");
-		let form = document.getElementById("create-server");
-		btn.style.display = "inline";
-		btn.addEventListener("click", () => {
-			form.style.display = "block";
-			form.style.transition = "ease-in-out 250ms transform";
-			window.setTimeout(() => {
-				form.style.transform = "scaleY(1)";
-				form.style.maxHeight = form.scrollHeight.toString() + "px";
-				btn.style.opacity = "0.5";
-				btn.style.pointerEvents = "none";
-				window.location.hash = "#create-server";
-			}, 25);
-			btn.blur();
-		});
-		function hideForm() {
-			form.style.transition = "ease-in-out 250ms";
-			form.style.transform = "scaleY(0)";
-			form.style.maxHeight = "0";
-			btn.style.opacity = "1";
-			btn.style.pointerEvents = "";
-		}
+		const btn = document.getElementById("new-server");
+		const form = document.getElementById("create-server");
+		` + popOutCode + `
 	</script>
 {{else}}
 	<i>You may not edit the database.</i>
@@ -157,8 +162,18 @@ const infoTemplate = adminPagesHeader + `
 	color: inherit;
 }
 {{if .AllowEditing}}
+	html {
+		scroll-behavior: smooth;
+	}
 	#edit-btn, #edit-btn ~ .button {
 		display: none;
+		transition: ease-in-out 250ms;
+	}
+	#delete-server {
+		display: none;
+		transform: scaleY(0);
+		transform-origin: top center;
+		max-height: 0;
 	}
 {{end}}
 </style>
@@ -197,36 +212,17 @@ const infoTemplate = adminPagesHeader + `
 			<br/>
 			<button type="button" id="edit-btn"
 				class="button-primary">Edit</button>
-			<script>
-				document.getElementById("edit-btn").style.display = "inline";
-			</script>
 			<input type="submit" value="Save" class="button button-primary"
 				disabled="disabled" />
+			<button type="button" id="delete-btn">Delete</button>
 			<a href="{{.Server.UID}}" class="button">Cancel</a>
+			<script>
+				document.getElementById("edit-btn").style.display = "inline";
+				document.getElementById("delete-btn").style.display = "inline";
+			</script>
 		{{end}}
 	</p>
 </form>
-
-{{if .AllowEditing}}
-	<script>
-		let p = document.getElementById("form-inner");
-		let btn = document.getElementById("edit-btn");
-		btn.addEventListener("click", () => {
-			let msg = document.getElementById("message");
-			if (msg) {
-				msg.style.fontSize = "0";
-				msg.style.margin = "0";
-				msg.style.padding = "0";
-			}
-			p.removeChild(btn);
-			for (let elem of p.children) {
-				if (elem.tagName.toLowerCase() === "input")
-					elem.removeAttribute("disabled");
-			}
-		});
-		window.history.replaceState(null, null, "/admin/edit/{{.Server.UID}}");
-	</script>
-{{end}}
 
 <h4>History</h4>
 <table>
@@ -261,6 +257,47 @@ const infoTemplate = adminPagesHeader + `
 		{{end}}
 	</tbody>
 </table>
+
+{{if .AllowEditing}}
+	<form autocomplete="off" method="post" action="/admin/delete"
+			id="delete-server">
+		<h3>Delete server</h3>
+		<b>This action cannot be undone.</b><br/>
+		To confirm the server deletion, please type the server's name
+		(<code>{{.Server.Name}}</code>) below.<br/><br/>
+		<input type="hidden" name="csrfToken" value={{.CSRFToken}} />
+		<input type="hidden" name="server-uid" value={{.Server.UID}} />
+		<input type="text" name="delete-uid" /><br/>
+		<input type="submit" name="delete" class="button-primary"
+			value="Delete server" />
+		<button type="button" onclick="hideForm()">Cancel</button>
+	</form>
+
+	<script>
+		"use strict";
+		const p = document.getElementById("form-inner");
+		const editBtn = document.getElementById("edit-btn");
+		const btn = document.getElementById("delete-btn");
+		editBtn.addEventListener("click", () => {
+			const msg = document.getElementById("message");
+			if (msg) {
+				msg.style.fontSize = "0";
+				msg.style.margin = "0";
+				msg.style.padding = "0";
+			}
+			p.removeChild(editBtn);
+			p.removeChild(btn);
+			for (let elem of p.children) {
+				if (elem.tagName.toLowerCase() === "input")
+					elem.removeAttribute("disabled");
+			}
+		});
+		window.history.replaceState(null, null, "/admin/edit/{{.Server.UID}}");
+
+		const form = document.getElementById("delete-server");
+		` + popOutCode + `
+	</script>
+{{end}}
 ` + adminPagesFooter
 
 type adminPagesSummary struct {
@@ -327,6 +364,19 @@ func (self csrfTokenManager) Get(username string) string {
 		self[username] = token
 	}
 	return token
+}
+
+func writeAdminErrorPage(w http.ResponseWriter, msg string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(500)
+	io.WriteString(w, adminPagesHeader+
+		`<h2>An error has occurred!</h2>`+
+		`<h5>`+html.EscapeString(msg)+`</h5>`+
+		`<i>You can hurry back to the previous page, or learn to like`+
+		` this error and then eventually grow old and die.</i>`+
+		`<br/><br/>`+
+		`<a class="button button-primary" href="/admin">Go back</a>`+
+		adminPagesFooter)
 }
 
 func addAdminPages(router *httprouter.Router, db lurkcoin.Database,
@@ -567,6 +617,31 @@ func addAdminPages(router *httprouter.Router, db lurkcoin.Database,
 		serverInfo(w, r, uid, adminUser, strings.Join(msgs, "\n"))
 	})
 
+	router.POST("/admin/delete", func(w http.ResponseWriter,
+		r *http.Request, params httprouter.Params) {
+		adminUser, authenticated := authenticateWithCSRF(w, r)
+		if !authenticated {
+			return
+		}
+
+		serverUID := r.Form.Get("server-uid")
+		if lurkcoin.HomogeniseUsername(r.Form.Get("delete-uid")) != serverUID {
+			writeAdminErrorPage(w, "You didn't type the correct server UID!")
+			return
+		}
+
+		if db.DeleteServer(serverUID) {
+			log.Printf(
+				"[Admin] User %#v deleted server %#v",
+				adminUser,
+				serverUID,
+			)
+			http.Redirect(w, r, "/admin", http.StatusSeeOther)
+		} else {
+			writeAdminErrorPage(w, "Could not delete "+serverUID+"!")
+		}
+	})
+
 	router.POST("/admin/create-server", func(w http.ResponseWriter,
 		r *http.Request, params httprouter.Params) {
 		adminUser, authenticated := authenticateWithCSRF(w, r)
@@ -595,16 +670,7 @@ func addAdminPages(router *httprouter.Router, db lurkcoin.Database,
 			msg = "The specified server already exists!"
 		}
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(500)
-		io.WriteString(w, adminPagesHeader+
-			`<h2>An error has occurred!</h2>`+
-			`<h5>`+msg+`</h5>`+
-			`<i>You can hurry back to the previous page, or learn to like`+
-			` this error and then eventually grow old and die.</i>`+
-			`<br/><br/>`+
-			`<a class="button button-primary" href="/admin">Go back</a>`+
-			adminPagesFooter)
+		writeAdminErrorPage(w, msg)
 	})
 
 	router.GET("/admin/backup", func(w http.ResponseWriter,

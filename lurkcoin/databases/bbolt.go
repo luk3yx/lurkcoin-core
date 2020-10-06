@@ -143,6 +143,19 @@ func (self *boltDatabase) ListServers() (res []string) {
 	return
 }
 
+func (self *boltDatabase) DeleteServer(name string) bool {
+	ids := self.dblock.Lock([]string{name})
+	defer self.dblock.UnlockIDs(ids)
+	err := self.db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte("lurkcoin"))
+		if bucket != nil {
+			return bucket.Delete([]byte(ids[0]))
+		}
+		return nil
+	})
+	return err == nil
+}
+
 func BoltDatabase(file string, _ map[string]string) (lurkcoin.Database, error) {
 	db, err := bolt.Open(file, 0600, nil)
 	if err != nil {

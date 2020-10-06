@@ -41,6 +41,7 @@ type Database interface {
 
 	CreateServer(string) (*Server, bool)
 	ListServers() []string
+	DeleteServer(string) bool
 }
 
 // An atomic database transaction.

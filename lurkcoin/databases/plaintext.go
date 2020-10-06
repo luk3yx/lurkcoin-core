@@ -64,28 +64,7 @@ func (self *plaintextDatabase) GetServers(names []string) ([]*lurkcoin.Server, b
 	return servers, ok, ""
 }
 
-func (self *plaintextDatabase) FreeServers(servers []*lurkcoin.Server, save bool) {
-	self.lock.Lock()
-	defer self.lock.Unlock()
-	self.dblock.Unlock(servers)
-
-	if !save {
-		return
-	}
-
-	modified := false
-	for _, server := range servers {
-		if server.IsModified() {
-			modified = true
-			encodedServer := server.Encode()
-			self.db[server.UID] = &encodedServer
-		}
-	}
-
-	if !modified {
-		return
-	}
-
+func (self *plaintextDatabase) save() {
 	f, err := ioutil.TempFile(path.Dir(self.location), ".tmp")
 	if err != nil {
 		panic(err)
@@ -115,6 +94,29 @@ func (self *plaintextDatabase) FreeServers(servers []*lurkcoin.Server, save bool
 	}
 }
 
+func (self *plaintextDatabase) FreeServers(servers []*lurkcoin.Server, save bool) {
+	self.lock.Lock()
+	defer self.lock.Unlock()
+	self.dblock.Unlock(servers)
+
+	if !save {
+		return
+	}
+
+	modified := false
+	for _, server := range servers {
+		if server.IsModified() {
+			modified = true
+			encodedServer := server.Encode()
+			self.db[server.UID] = &encodedServer
+		}
+	}
+
+	if modified {
+		self.save()
+	}
+}
+
 func (self *plaintextDatabase) CreateServer(name string) (*lurkcoin.Server, bool) {
 	ids := self.dblock.Lock([]string{name})
 	id := ids[0]
@@ -140,6 +142,18 @@ func (self *plaintextDatabase) ListServers() []string {
 		i++
 	}
 	return res
+}
+
+func (self *plaintextDatabase) DeleteServer(name string) (exists bool) {
+	ids := self.dblock.Lock([]string{name})
+	defer self.dblock.UnlockIDs(ids)
+	id := ids[0]
+	_, exists = self.db[id]
+	if exists {
+		delete(self.db, id)
+		self.save()
+	}
+	return
 }
 
 func PlaintextDatabase(location string, _ map[string]string) (lurkcoin.Database, error) {
