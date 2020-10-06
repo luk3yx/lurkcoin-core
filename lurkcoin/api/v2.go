@@ -195,7 +195,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 				return nil, errors.New("ERR_SERVERNOTFOUND")
 			}
 
-			_, err = r.Server.Pay("", target, targetServer,
+			_, err = r.Server.Pay(f.Get("source"), target, targetServer,
 				amount, isYes(f.Get("local_currency")), true)
 			if err != nil {
 				return nil, err
