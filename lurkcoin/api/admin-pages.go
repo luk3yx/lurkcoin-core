@@ -134,7 +134,7 @@ const serverListTemplate = adminPagesHeader + `
 				required="required" id="username-field" /><br/>
 			<input type="submit" name="submit" class="button-primary"
 				value="Create" />
-			<button type="button" onclick="hideForm2()">Cancel</button>
+			<button type="button" onclick="hideForm()">Cancel</button>
 		</div>
 	</form>
 
