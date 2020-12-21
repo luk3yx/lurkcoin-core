@@ -152,7 +152,7 @@ const serverListTemplate = adminPagesHeader + `
 const currencyInput = `type="text" pattern="¤?[0-9,_]+(\.[0-9,_]+)?"`
 const infoTemplate = adminPagesHeader + `
 <style>
-#form-inner input, #message {
+#form-inner input, #form-inner label, #message {
 	transition: ease-in-out 200ms;
 	text-overflow: ellipsis;
 }
@@ -165,7 +165,7 @@ const infoTemplate = adminPagesHeader + `
 	html {
 		scroll-behavior: smooth;
 	}
-	#edit-btn, #edit-btn ~ .button {
+	#edit-btn, #edit-btn ~ .button, #edit-btn ~ button {
 		display: none;
 		transition: ease-in-out 250ms;
 	}
@@ -174,6 +174,18 @@ const infoTemplate = adminPagesHeader + `
 		transform: scaleY(0);
 		transform-origin: top center;
 		max-height: 0;
+	}
+	#regenerate-token {
+		margin-bottom: 2rem;
+	}
+	#regenerate-token + label {
+		display: inline-block;
+		vertical-align: middle;
+		user-select: none;
+	}
+	#regenerate-token[disabled="disabled"],
+			#regenerate-token[disabled="disabled"] + label {
+		opacity: 0.5;
 	}
 {{end}}
 </style>
@@ -209,6 +221,12 @@ const infoTemplate = adminPagesHeader + `
 		 	disabled="disabled" name="webhookURL" />
 
 		{{if .AllowEditing}}
+			<br/>
+			<input type="checkbox" id="regenerate-token"
+				disabled="disabled" name="regenerateToken" />
+			<label for="regenerate-token">
+				Regenerate token
+			</label>
 			<br/>
 			<button type="button" id="edit-btn"
 				class="button-primary">Edit</button>
@@ -608,6 +626,20 @@ func addAdminPages(router *httprouter.Router, db lurkcoin.Database,
 				server.Name,
 				server.WebhookURL,
 			)
+		}
+
+		if r.Form.Get("regenerateToken") == "on" {
+			if len(msgs) == 0 {
+				msgs = append(msgs, "New token: "+server.RegenerateToken())
+				log.Printf(
+					"[Admin] User %#v regenerates the token of server %#v",
+					adminUser,
+					server.Name,
+				)
+			} else {
+				msgs = append(msgs, "Refusing to regenerate token as other"+
+					" settings were changed.")
+			}
 		}
 
 		// Finish the transaction

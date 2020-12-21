@@ -323,6 +323,15 @@ func (self *Server) GetExchangeRate(amount Currency, toLurkcoin bool) (Currency,
 	return CurrencyFromFloat(res), exchange
 }
 
+// Regenerates the token and returns the new one.
+func (self *Server) RegenerateToken() string {
+	self.lock.Lock()
+	defer self.lock.Unlock()
+	self.token = GenerateToken()
+	self.modified = true
+	return self.token
+}
+
 // "Encoded" servers that have all their values public
 type EncodedServer struct {
 	// A version number for breaking changes, because of the way gob works this
