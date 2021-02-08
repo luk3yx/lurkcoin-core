@@ -28,6 +28,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -151,8 +152,14 @@ func StartServer(config *Config) {
 	}
 
 	// Remove any socket file that already exists
+	var changeSocketPermissions bool
 	if networkProtocol == "unix" {
 		os.Remove(address)
+
+		// Only call chmod if no other users can write to the directory
+		if stat, err := os.Stat(filepath.Dir(address)); err == nil {
+			changeSocketPermissions = stat.Mode() & 022 == 0
+		}
 	}
 
 	// Bind to the address
@@ -163,7 +170,7 @@ func StartServer(config *Config) {
 	}
 
 	// Change permissions on the UNIX socket
-	if networkProtocol == "unix" {
+	if changeSocketPermissions {
 		if err := os.Chmod(address, 0777); err != nil {
 			log.Fatal(err)
 		}
