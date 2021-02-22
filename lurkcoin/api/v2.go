@@ -28,7 +28,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"lurkcoin"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"math/big"
 	"net/http"
 	"strconv"
@@ -253,7 +253,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 					return exc, nil
 				}
 				s := func(n string) string {
-					return strings.Replace(n, "|", "/", -1)
+					return strings.ReplaceAll(n, "|", "/")
 				}
 				transaction := transactions[0]
 				// To support fragile clients (such as versions of the lurkcoin
@@ -261,7 +261,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 				return fmt.Sprintf("%g|%d|%s|%s|%s",
 					exc,
 					transaction.GetLegacyID(),
-					s(strings.Replace(transaction.Target, "¤", "_", -1)),
+					s(strings.ReplaceAll(transaction.Target, "¤", "_")),
 					transaction.ReceivedAmount.RawString(),
 					s(transaction.String()),
 				), nil
@@ -270,7 +270,7 @@ func addV2API(router *httprouter.Router, db lurkcoin.Database,
 			for i, transaction := range transactions {
 				res[i] = [4]interface{}{
 					transaction.GetLegacyID(),
-					strings.Replace(transaction.Target, "¤", "_", -1),
+					strings.ReplaceAll(transaction.Target, "¤", "_"),
 					transaction.ReceivedAmount,
 					transaction.String(),
 				}

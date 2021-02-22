@@ -59,7 +59,7 @@ var invalid_uid = regexp.MustCompile(`[^a-z0-9\_]`)
 
 func HomogeniseUsername(username string) string {
 	username = strings.ToLower(username)
-	username = strings.Replace(username, " ", "", -1)
+	username = strings.ReplaceAll(username, " ", "")
 	return invalid_uid.ReplaceAllLiteralString(username, "_")
 }
 

@@ -20,8 +20,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin/api"
 	"log"
-	"lurkcoin/api"
 	"os"
 )
 

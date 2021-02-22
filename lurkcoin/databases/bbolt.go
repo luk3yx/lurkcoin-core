@@ -25,7 +25,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"errors"
-	"lurkcoin"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 
 	bolt "go.etcd.io/bbolt"
 )

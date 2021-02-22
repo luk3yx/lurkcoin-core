@@ -22,8 +22,8 @@ package api
 
 import (
 	"github.com/julienschmidt/httprouter"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"log"
-	"lurkcoin"
 )
 
 func addV2API(_ *httprouter.Router, _ lurkcoin.Database, _ string) {

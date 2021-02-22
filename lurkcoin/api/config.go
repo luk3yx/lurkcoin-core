@@ -20,11 +20,11 @@ package api
 
 import (
 	"fmt"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin/databases"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-	"lurkcoin"
-	"lurkcoin/databases"
 	"net"
 	"net/http"
 	"os"
@@ -158,7 +158,7 @@ func StartServer(config *Config) {
 
 		// Only call chmod if no other users can write to the directory
 		if stat, err := os.Stat(filepath.Dir(address)); err == nil {
-			changeSocketPermissions = stat.Mode() & 022 == 0
+			changeSocketPermissions = stat.Mode()&022 == 0
 		}
 	}
 

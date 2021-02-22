@@ -5,13 +5,7 @@ This is the core code of the current release of
 
 ## Dependencies
 
- - [Go](https://golang.org) 1.10+, Go 1.14 or later recommended.
- - [bbolt](https://github.com/etcd-io/bbolt)
-    - `go get go.etcd.io/bbolt`
- - [httprouter](https://github.com/julienschmidt/httprouter)
-    - `go get github.com/julienschmidt/httprouter`
- - [yaml](https://gopkg.in/yaml.v2)
-    - `go get gopkg.in/yaml.v2`
+[Go](https://golang.org) 1.13+
 
 ## Configuration
 

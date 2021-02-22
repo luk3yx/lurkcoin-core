@@ -20,7 +20,7 @@ package databases
 
 import (
 	"fmt"
-	"lurkcoin"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"sort"
 	"strings"
 	"sync"

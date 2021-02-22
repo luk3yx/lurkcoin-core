@@ -22,8 +22,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/julienschmidt/httprouter"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"io"
-	"lurkcoin"
 	"net/http"
 	"strings"
 )

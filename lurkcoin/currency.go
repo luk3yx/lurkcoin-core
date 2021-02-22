@@ -239,7 +239,7 @@ func CurrencyFromFloat64(num float64) Currency {
 
 func CurrencyFromString(num string) Currency {
 	var res Currency
-	if res.setString(strings.Replace(num, "_", "", -1)) {
+	if res.setString(strings.ReplaceAll(num, "_", "")) {
 		return res
 	} else {
 		return Currency{i0}
@@ -248,7 +248,7 @@ func CurrencyFromString(num string) Currency {
 
 func ParseCurrency(num string) (Currency, error) {
 	var res Currency
-	if res.setString(strings.Replace(num, "_", "", -1)) {
+	if res.setString(strings.ReplaceAll(num, "_", "")) {
 		return res, nil
 	} else {
 		return Currency{i0}, errors.New("ERR_INVALIDAMOUNT")

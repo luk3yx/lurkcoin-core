@@ -22,11 +22,11 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"github.com/julienschmidt/httprouter"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"html"
 	"html/template"
 	"io"
 	"log"
-	"lurkcoin"
 	"net/http"
 	"regexp"
 	"strings"
@@ -327,8 +327,8 @@ type adminPagesSummary struct {
 }
 
 func parseNumbers(n1, n2 string) (lurkcoin.Currency, lurkcoin.Currency, bool) {
-	n1 = strings.Replace(n1, ",", "", -1)
-	n2 = strings.Replace(n2, ",", "", -1)
+	n1 = strings.ReplaceAll(n1, ",", "")
+	n2 = strings.ReplaceAll(n2, ",", "")
 
 	var res1, res2 lurkcoin.Currency
 	var err error

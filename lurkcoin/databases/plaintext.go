@@ -22,8 +22,8 @@ package databases
 
 import (
 	"encoding/json"
+	"github.com/luk3yx/lurkcoin-core/lurkcoin"
 	"io/ioutil"
-	"lurkcoin"
 	"os"
 	"path"
 	"sync"
