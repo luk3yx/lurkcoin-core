@@ -7,6 +7,9 @@ This is the core code of the current release of
 
 [Go](https://golang.org) 1.13+
 
+I advise against importing lurkcoin in your own Go code, any functions or types
+can and will change in future releases.
+
 ## Configuration
 
 See config.yaml for a list of configuration options.
