@@ -3,12 +3,29 @@
 This is the core code of the current release of
 [lurkcoin](https://forum.minetest.net/viewtopic.php?f=9&t=22768).
 
-## Dependencies
+## Installation
 
-[Go](https://golang.org) 1.13+
+Make sure you have [Go](https://golang.org) 1.13 or later installed.
 
-I advise against importing lurkcoin in your own Go code, any functions or types
-can and will change in future releases.
+To run lurkcoin, you can just install the lurkcoin-core binary:
+
+```
+$ go get github.com/luk3yx/lurkcoin-core
+$ lurkcoin-core /path/to/config.yaml
+```
+
+*If you get a command not found error, you may have to run
+~/go/bin/lurkcoin-core instead.*
+
+I advise against importing `github.com/luk3yx/lurkcoin-core` in your own Go
+code, any functions or types can and will change in future releases.
+
+## Restoring the database from a backup
+
+```
+$ go get github.com/luk3yx/lurkcoin-core/cmd/...
+$ lurkcoin-restore-backup /path/to/config.yaml /path/to/backup.json
+```
 
 ## Configuration
 
