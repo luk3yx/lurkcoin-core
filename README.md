@@ -7,7 +7,7 @@ This is the core code of the current release of
 
 Make sure you have [Go](https://golang.org) 1.13 or later installed.
 
-To run lurkcoin, you can just install the lurkcoin-core binary:
+To run lurkcoin, you can compile the lurkcoin-core binary:
 
 ```
 $ go get github.com/luk3yx/lurkcoin-core
