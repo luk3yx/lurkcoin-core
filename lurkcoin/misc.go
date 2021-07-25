@@ -35,14 +35,14 @@ import (
 )
 
 const SYMBOL = "¤"
-const VERSION = "3.0.9"
+const VERSION = "3.0.10"
 
 // Note that public source code is required by the AGPL
 const SOURCE_URL = "https://github.com/luk3yx/lurkcoin-core"
 const REPORT_SECURITY = "https://gitlab.com/luk3yx/lurkcoin-core/-/issues/new"
 
 // Copyrights should be separated by newlines
-const COPYRIGHT = "Copyright © 2020 by luk3yx"
+const COPYRIGHT = "Copyright © 2021 by luk3yx"
 
 func PrintASCIIArt() {
 	log.Print(`/\___/\    _            _             _`)
@@ -141,12 +141,20 @@ func GetExchangeRate(db Database, source, target string, amount Currency) (Curre
 		return amount, nil
 	}
 
+	// Check the amount against the transaction limit
+	if amount.Gt(transactionLimit) {
+		return c0, errors.New("ERR_TRANSACTIONLIMIT")
+	}
+
 	if source != "" {
 		sourceServer, ok := tr.GetOneServer(source)
 		if !ok {
 			return c0, errors.New("ERR_SOURCESERVERNOTFOUND")
 		}
 		amount, _ = sourceServer.GetExchangeRate(amount, true)
+		if amount.Gt(transactionLimit) {
+			return c0, errors.New("ERR_TRANSACTIONLIMIT")
+		}
 
 		// Abort the transaction now to get the target server
 		tr.Abort()
@@ -157,6 +165,9 @@ func GetExchangeRate(db Database, source, target string, amount Currency) (Curre
 			return c0, errors.New("ERR_TARGETSERVERNOTFOUND")
 		}
 		amount, _ = targetServer.GetExchangeRate(amount, false)
+		if amount.Gt(transactionLimit) {
+			return c0, errors.New("ERR_TRANSACTIONLIMIT")
+		}
 	}
 	return amount, nil
 }

@@ -25,7 +25,10 @@ import (
 
 // The transaction limit, currently 1e+11 so clients that parse JSON numbers as
 // 64-bit floats won't run into issues.
-var transactionLimit Currency = CurrencyFromInt64(100000000000)
+// var transactionLimit Currency = CurrencyFromInt64(100000000000)
+
+// Temporarily changed to 10,000 due to broken exchange rate calculations
+var transactionLimit Currency = CurrencyFromInt64(10000)
 
 // Sends a payment.
 func (sourceServer *Server) Pay(source, target string,
